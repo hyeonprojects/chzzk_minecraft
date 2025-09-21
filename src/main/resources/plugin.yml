@@ -1,0 +1,7 @@
+name: ChzzkMinecraftPlugin
+version: 0.1.0
+main: kr.kro.chzzk-minecraft.main
+description: Chzzk's Minecraft Plugin
+author: Hyeonprojects
+website: https://github.com/hyeonprojects/chzzk_minecraft
+api-version: '1.21.8'

@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.2.0"
 }
 
-group = "org.example"
+group = "kr.kro.chzzk.minecraft"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -24,7 +24,6 @@ tasks.test {
 
 tasks.jar {
     manifest {
-        attributes["paperweight-mappings-namespace"] = "mojang"
         attributes["paperweight-mappings-namespace"] = "spigot"
     }
 }
