@@ -1,16 +1,24 @@
 package kr.kro.chzzk.minecraft
 
 import org.bukkit.plugin.java.JavaPlugin
+import kr.kro.chzzk.minecraft.presentation.command.AuthCommand
+import kr.kro.chzzk.minecraft.infrastructure.config.PluginConfig
 
-class ChzzkMinecraftPlugin : JavaPlugin() {
+class Main : JavaPlugin() {
     
     // Configuration manager instance
-    lateinit var config: Config
+    lateinit var config: PluginConfig
     
     // This method is called when the plugin is enabled
     override fun onEnable() {
+        // DB Connection Open
+
+
         // Initialize configuration
-        config = Config(this)
+        config = PluginConfig(this)
+        
+        // Command 등록
+        getCommand("chzzk")?.setExecutor(AuthCommand())
         
         // Event 활성화
 
@@ -21,6 +29,8 @@ class ChzzkMinecraftPlugin : JavaPlugin() {
 
     // This method is called when the plugin is disabled
     override fun onDisable() {
+        // DB Connection Close
+
         // Plugin shutdown logic
         logger.info("치즈마인크래프트 연동 플러그인이 비활성화되었습니다.")
     }

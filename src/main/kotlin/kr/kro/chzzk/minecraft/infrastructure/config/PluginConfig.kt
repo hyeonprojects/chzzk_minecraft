@@ -1,4 +1,4 @@
-package kr.kro.chzzk.minecraft
+package kr.kro.chzzk.minecraft.infrastructure.config
 
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin
  * Configuration manager for ChzzkMinecraftPlugin
  * Loads and provides access to plugin.yml values
  */
-class Config(private val plugin: JavaPlugin) {
+class PluginConfig(private val plugin: JavaPlugin) {
     
     /**
      * Plugin name from plugin.yml

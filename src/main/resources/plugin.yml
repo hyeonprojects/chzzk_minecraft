@@ -1,6 +1,6 @@
 name: ChzzkMinecraftPlugin
 version: 0.1.0
-main: kr.kro.chzzk.minecraft.ChzzkMinecraftPlugin
+main: kr.kro.chzzk.minecraft.Main
 description: Chzzk's Minecraft Plugin
 author: Hyeonprojects
 website: https://github.com/hyeonprojects/chzzk_minecraft
@@ -10,40 +10,23 @@ permissions:
   chzzk.user:
     description: "기본 사용 권한 (연결해서 사용할 사람)"
     default: true
-
+  chzzk.link:
+    description: "치지직 계정 연결 권한"
+    default: true
+  chzzk.unlink:
+    description: "치지직 계정 연결 해제 권한"
+    default: true
+  chzzk.status:
+    description: "치지직 연결 상태 확인 권한"
+    default: true
   chzzk.admin:
     description: "관리자 권한"
     default: op
 
 
 commands:
-    # 치지직 연동 명령어
-    chzzk link:
-        description: "치지직 마인크래프트 연동 인증 명령어"
-        usage: "/chzzk link <치지직개발자코드>"
-        permission: chzzk.user
-    chzzk unlink:
-        description: "치지직 마인크래프트 연동 해제 명령어
-        usage: "/chzzk unlink"
-        permission: chzzk.user
-    chzzk status:
-        description: "치지직 마인크래프트 연동 상태 확인 명령어"
-        usage: "/chzzk status"
-        permission: chzzk.user
-
-
-    # 치지직 플러그인 명령어
-    chzzk version:
-        description: "치지직 마인크래프트 플러그인 버전 확인"
-        usage: "/chzzk version"
-        permission: chzzk.user
-    chzzk help:
-        description: "치지직 마인크래프트 플러그인 도움말"
-        usage: "/chzzk help"
-        permission: chzzk.user
-
-    # 관리자 명령어
-    chzzk reload:
-      description: "치지직 마인크래프트 플러그인 설정 재로드"
-      usage: "/chzzk reload"
-      permission: chzzk.admin
+  chzzk:
+    description: "치지직 마인크래프트 연동 명령어"
+    usage: "/chzzk <link|unlink|status>"
+    permission: chzzk.user
+    aliases: ["치지직", "ㅊㅈㅈ"]
