@@ -31,7 +31,6 @@ class AuthChzzk : CommandExecutor {
             }
         }
 
-
         return TODO("Provide the return value")
     }
 
