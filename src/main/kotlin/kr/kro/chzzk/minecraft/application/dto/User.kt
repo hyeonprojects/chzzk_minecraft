@@ -2,6 +2,7 @@ package kr.kro.chzzk.minecraft.application.dto
 
 data class User (
     val id: Int,
+    val minecraftUuid: java.util.UUID,
     val minecraftName: String,
     val chzzkId: String,
     val chzzkName: String,

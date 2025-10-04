@@ -1,14 +1,42 @@
 package kr.kro.chzzk.minecraft.presentation.command
 
+import kr.kro.chzzk.minecraft.application.usecase.LinkAccountUseCase
+import kr.kro.chzzk.minecraft.application.usecase.UnlinkAccountUseCase
+import kr.kro.chzzk.minecraft.application.service.AuthService
+import kr.kro.chzzk.minecraft.presentation.message.MessageManager
+import kr.kro.chzzk.minecraft.shared.extension.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import kotlinx.coroutines.runBlocking
 
 /**
- * 치지직 연결 명령어를 관리하는 클래스
+ * 인증 관련 명령어 처리기
+ * 
+ * 일반 사용자들이 사용하는 치지직 계정 연결 관련 명령어들을 처리합니다.
+ * Clean Architecture의 Presentation Layer에서 사용자 입력을 받아
+ * 적절한 Use Case나 Service로 요청을 전달하고 결과를 사용자에게 표시합니다.
+ * 
+ * 지원 명령어:
+ * - /chzzk link <코드>: 치지직 계정 연결
+ * - /chzzk unlink: 치지직 계정 연결 해제
+ * - /chzzk status: 현재 연결 상태 확인
+ * - /chzzk help: 도움말 표시
+ * 
+ * @param linkAccountUseCase 계정 연결 유스케이스
+ * @param unlinkAccountUseCase 계정 연결 해제 유스케이스
+ * @param authService 인증 관련 서비스
+ * @param messageManager 메시지 관리자
+ * @author Hyeonprojects
+ * @since 1.0
  */
-class AuthCommand : CommandExecutor {
+class AuthCommand(
+    private val linkAccountUseCase: LinkAccountUseCase,
+    private val unlinkAccountUseCase: UnlinkAccountUseCase,
+    private val authService: AuthService,
+    private val messageManager: MessageManager
+) : CommandExecutor {
     override fun onCommand(
         commandSender: CommandSender,
         command: Command,
@@ -34,126 +62,141 @@ class AuthCommand : CommandExecutor {
         }
     }
 
-    /**
-     * 치지직 연동 명령어 도움말을 출력합니다.
-     */
     private fun sendHelp(commandSender: CommandSender) {
-        commandSender.sendMessage("치지직 연동 명령어 도움말")
-        commandSender.sendMessage("/chzzk link <코드> - 치지직 계정과 연결합니다.")
-        commandSender.sendMessage("/chzzk unlink - 치지직 계정과의 연결을 해제합니다.")
-        commandSender.sendMessage("/chzzk status - 현재 연결 상태를 확인합니다.")
+        commandSender.sendMessage(messageManager.getMessage("command.help.title"))
+        commandSender.sendMessage(messageManager.getMessage("command.help.link"))
+        commandSender.sendMessage(messageManager.getMessage("command.help.unlink"))
+        commandSender.sendMessage(messageManager.getMessage("command.help.status"))
+        
+        if (commandSender.hasPermission("chzzk.admin")) {
+            commandSender.sendMessage(messageManager.getMessage("command.help.admin"))
+        }
     }
 
-    /**
-     * 치지직 계정과 연결하는 명령어를 처리합니다.
-     */
     private fun handleLink(commandSender: CommandSender, args: Array<out String>): Boolean {
-        // 플레이어만 사용 가능
         if (commandSender !is Player) {
-            commandSender.sendMessage("§c이 명령어는 플레이어만 사용할 수 있습니다.")
+            commandSender.sendMessage(messageManager.getMessage("error.player-only"))
             return false
         }
 
-        // 권한 확인
-        if (!commandSender.hasPermission("chzzk.link")) {
-            commandSender.sendMessage("§c이 명령어를 사용할 권한이 없습니다.")
+        if (!commandSender.canLinkAccount()) {
+            commandSender.sendMessage(messageManager.getMessage("error.permission"))
             return false
         }
 
         if (args.size != 2) {
-            commandSender.sendMessage("§c사용법: /chzzk link <코드>")
+            commandSender.sendMessage(
+                messageManager.getMessage("error.invalid-usage", "/chzzk link <코드>")
+            )
             return false
         }
 
         val code = args[1]
         
-        // 입력 검증
-        if (!isValidCode(code)) {
-            commandSender.sendMessage("§c유효하지 않은 코드 형식입니다.")
-            return false
+        runBlocking {
+            try {
+                val request = LinkAccountUseCase.LinkAccountRequest(
+                    minecraftUuid = commandSender.uniqueId,
+                    minecraftName = commandSender.name,
+                    authCode = code
+                )
+                
+                when (val result = linkAccountUseCase.execute(request)) {
+                    is LinkAccountUseCase.LinkAccountResponse.Success -> {
+                        commandSender.sendChzzkSuccess(
+                            messageManager.getMessage("command.link.success")
+                        )
+                        commandSender.sendMessage(
+                            messageManager.getMessage(
+                                "command.status.linked-info", 
+                                result.user.chzzkName
+                            )
+                        )
+                    }
+                    is LinkAccountUseCase.LinkAccountResponse.Error -> {
+                        commandSender.sendChzzkError(result.message)
+                    }
+                }
+            } catch (e: Exception) {
+                commandSender.sendChzzkError(messageManager.getMessage("error.general"))
+            }
         }
-
-        try {
-            // TODO: 실제 치지직 API 연동 구현
-            // 예시: ChzzkAPI.linkAccount(commandSender.uniqueId, code)
-            
-            commandSender.sendMessage("§a치지직 계정이 성공적으로 연결되었습니다!")
-            commandSender.sendMessage("§7연결된 코드: ${code.take(4)}****")
-            return true
-        } catch (e: Exception) {
-            commandSender.sendMessage("§c연결 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
-            // TODO: 로깅 시스템 연동
-            return false
-        }
+        
+        return true
     }
 
-    /**
-     * 치지직 계정 연결을 해제하는 명령어를 처리합니다.
-     */
     private fun handleUnlink(commandSender: CommandSender): Boolean {
         if (commandSender !is Player) {
-            commandSender.sendMessage("§c이 명령어는 플레이어만 사용할 수 있습니다.")
+            commandSender.sendMessage(messageManager.getMessage("error.player-only"))
             return false
         }
 
-        if (!commandSender.hasPermission("chzzk.unlink")) {
-            commandSender.sendMessage("§c이 명령어를 사용할 권한이 없습니다.")
+        if (!commandSender.canUnlinkAccount()) {
+            commandSender.sendMessage(messageManager.getMessage("error.permission"))
             return false
         }
 
-        try {
-            // TODO: 실제 연결 해제 구현
-            // 예시: ChzzkAPI.unlinkAccount(commandSender.uniqueId)
-            
-            commandSender.sendMessage("§a치지직 계정 연결이 해제되었습니다.")
-            return true
-        } catch (e: Exception) {
-            commandSender.sendMessage("§c연결 해제 중 오류가 발생했습니다.")
-            return false
+        runBlocking {
+            try {
+                val request = UnlinkAccountUseCase.UnlinkAccountRequest(commandSender.uniqueId)
+                
+                when (val result = unlinkAccountUseCase.execute(request)) {
+                    is UnlinkAccountUseCase.UnlinkAccountResponse.Success -> {
+                        commandSender.sendChzzkSuccess(
+                            messageManager.getMessage("command.unlink.success")
+                        )
+                    }
+                    is UnlinkAccountUseCase.UnlinkAccountResponse.Error -> {
+                        commandSender.sendChzzkError(result.message)
+                    }
+                }
+            } catch (e: Exception) {
+                commandSender.sendChzzkError(messageManager.getMessage("error.general"))
+            }
         }
+        
+        return true
     }
 
-    /**
-     * 현재 치지직 연결 상태를 확인하는 명령어를 처리합니다.
-     */
     private fun handleStatus(commandSender: CommandSender): Boolean {
         if (commandSender !is Player) {
-            commandSender.sendMessage("§c이 명령어는 플레이어만 사용할 수 있습니다.")
+            commandSender.sendMessage(messageManager.getMessage("error.player-only"))
             return false
         }
 
-        if (!commandSender.hasPermission("chzzk.status")) {
-            commandSender.sendMessage("§c이 명령어를 사용할 권한이 없습니다.")
+        if (!commandSender.canCheckStatus()) {
+            commandSender.sendMessage(messageManager.getMessage("error.permission"))
             return false
         }
 
-        try {
-            // TODO: 실제 상태 확인 구현
-            // 예시: val isLinked = ChzzkAPI.isLinked(commandSender.uniqueId)
-            
-            val isLinked = false // 임시값
-            
-            if (isLinked) {
-                commandSender.sendMessage("§a치지직 계정이 연결되어 있습니다.")
-                // TODO: 연결된 계정 정보 표시
-            } else {
-                commandSender.sendMessage("§c치지직 계정이 연결되어 있지 않습니다.")
-                commandSender.sendMessage("§7/chzzk link <코드> 명령어로 연결할 수 있습니다.")
+        runBlocking {
+            try {
+                val linkedUser = authService.getLinkedAccount(commandSender.uniqueId)
+                
+                if (linkedUser != null) {
+                    commandSender.sendChzzkSuccess(
+                        messageManager.getMessage("command.status.linked")
+                    )
+                    commandSender.sendMessage(
+                        messageManager.getMessage(
+                            "command.status.linked-info",
+                            linkedUser.chzzkName
+                        )
+                    )
+                } else {
+                    commandSender.sendMessage(
+                        messageManager.getMessage("command.status.not-linked")
+                    )
+                    commandSender.sendMessage(
+                        messageManager.getMessage("command.status.how-to-link")
+                    )
+                }
+            } catch (e: Exception) {
+                commandSender.sendChzzkError(messageManager.getMessage("error.general"))
             }
-            return true
-        } catch (e: Exception) {
-            commandSender.sendMessage("§c상태 확인 중 오류가 발생했습니다.")
-            return false
         }
+        
+        return true
     }
 
-    /**
-     * 연결 코드의 유효성을 검증합니다.
-     */
-    private fun isValidCode(code: String): Boolean {
-        // 기본 검증 (실제 구현 시 치지직 API 규격에 맞게 수정)
-        return code.isNotBlank() && 
-               code.length in 6..32 && 
-               code.matches(Regex("^[a-zA-Z0-9]+$"))
-    }
 }
