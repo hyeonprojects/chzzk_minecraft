@@ -6,12 +6,11 @@ import java.util.*
  * 치지직 연동 사용자 데이터 모델
  */
 data class User(
-    val id: Int,
-    val minecraftUuid: UUID,
-    val minecraftName: String,
-    val chzzkId: String,
-    val chzzkName: String,
-    val chzzkDevCode: String,
+    val id: Int, // DB 고유 ID
+    val minecraftName: String, // 마인크래프트 닉네임
+    val chzzkId: String, // 치지직 ID
+    val chzzkName: String, // 치지직 닉네임
+    val chzzkDevCode: String, // 치지직 개발자 코드
     val createdAt: Long,
     val updatedAt: Long
 )
