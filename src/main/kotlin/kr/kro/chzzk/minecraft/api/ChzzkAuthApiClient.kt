@@ -58,7 +58,7 @@ class ChzzkApiClient {
                 val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
                 // 상태 코드가 200인 경우에만 처리
-                if (response.statusCode() === 200) {
+                if (response.statusCode() == 200) {
                     val responseBody = Json.decodeFromString<ChzzkAuthCodeResponseDto>(response.body())
                     responseBody
                 } else {
@@ -104,7 +104,7 @@ class ChzzkApiClient {
                 val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
                 // 상태 코드가 200인 경우에만 처리
-                if (response.statusCode() === 200) {
+                if (response.statusCode() == 200) {
                     val responseBody = Json.decodeFromString<ChzzkTokenResponse>(response.body())
                     responseBody
                 } else {
@@ -146,7 +146,7 @@ class ChzzkApiClient {
                 val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
                 // 상태 코드가 200인 경우에만 처리
-                if (response.statusCode() === 200) {
+                if (response.statusCode() == 200) {
                     val responseBody = Json.decodeFromString<ChzzkTokenResponse>(response.body())
                     responseBody
                 } else {
@@ -187,7 +187,7 @@ class ChzzkApiClient {
                 val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
 
                 // 상태 코드가 200인 경우에만 처리
-                if (response.statusCode() === 200) {
+                if (response.statusCode() == 200) {
                     true
                 } else {
                     println("토큰 폐기 요청 실패: ${response.statusCode()}")
