@@ -1,7 +1,4 @@
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
-rootProject.name = "chzzk_minecraft"
-
-include("paper_plugin")
-include("webhook_server")
+rootProject.name = "paper_plugin"

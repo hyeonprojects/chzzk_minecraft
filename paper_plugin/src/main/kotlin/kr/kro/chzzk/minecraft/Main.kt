@@ -9,6 +9,7 @@ import kr.kro.chzzk.minecraft.listener.PlayerJoinListener
 import kr.kro.chzzk.minecraft.listener.PlayerQuitListener
 import kr.kro.chzzk.minecraft.util.MessageUtil
 import kr.kro.chzzk.minecraft.util.ConfigUtil
+import kr.kro.chzzk.minecraft.webhook.WebhookServer
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -21,6 +22,7 @@ class Main : JavaPlugin() {
     private lateinit var chzzkApiClient: ChzzkApiClient
     private lateinit var messageUtil: MessageUtil
     private lateinit var configUtil: ConfigUtil
+    private lateinit var webhookServer: WebhookServer
     
     override fun onEnable() {
         try {
@@ -44,6 +46,17 @@ class Main : JavaPlugin() {
             server.pluginManager.registerEvents(PlayerJoinListener(userRepository, messageUtil), this)
             server.pluginManager.registerEvents(PlayerQuitListener(userRepository), this)
             
+            // 웹훅 서버 시작
+            val webhookPort = config.getInt("webhook.port", 8080)
+            val webhookEnabled = config.getBoolean("webhook.enabled", true)
+            
+            if (webhookEnabled) {
+                webhookServer = WebhookServer(this, webhookPort)
+                webhookServer.start()
+            } else {
+                logger.info("웹훅 서버가 비활성화되어 있습니다.")
+            }
+            
             logger.info("치지직 마인크래프트 연동 플러그인이 활성화되었습니다.")
             
         } catch (e: Exception) {
@@ -55,6 +68,12 @@ class Main : JavaPlugin() {
     
     override fun onDisable() {
         try {
+            // 웹훅 서버 종료
+            if (::webhookServer.isInitialized) {
+                webhookServer.stop()
+            }
+            
+            // 데이터베이스 연결 종료
             if (::databaseManager.isInitialized) {
                 databaseManager.disconnect()
             }

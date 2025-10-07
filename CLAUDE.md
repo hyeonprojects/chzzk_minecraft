@@ -8,31 +8,49 @@ This is a Minecraft Paper plugin written in Kotlin, designed to integrate with t
 
 ## Build Commands
 
-- `./gradlew build` - Builds the entire project (compile + test + assemble)
-- `./gradlew jar` - Creates the plugin JAR file for deployment
-- `./gradlew clean` - Cleans the build directory
-- `./gradlew assemble` - Assembles the plugin without running tests
-- `./gradlew test` - Runs the test suite
-- `./gradlew check` - Runs all verification tasks
+### Root Project
+- `./gradlew build` - Builds all subprojects (paper_plugin + webhook_server)
+- `./gradlew clean` - Cleans all subprojects
+
+### Paper Plugin
+- `./gradlew :paper_plugin:build` - Builds the Paper plugin
+- `./gradlew :paper_plugin:jar` - Creates the plugin JAR file for deployment
+- `./gradlew :paper_plugin:test` - Runs the plugin test suite
+
+### Webhook Server
+- `./gradlew :webhook_server:build` - Builds the webhook server
+- `./gradlew :webhook_server:run` - Runs the webhook server
+- `./gradlew :webhook_server:test` - Runs the webhook server test suite
 
 ## Development Commands
 
-- `./gradlew compileKotlin` - Compiles the main Kotlin source code
-- `./gradlew compileTestKotlin` - Compiles the test Kotlin source code
-- `./gradlew classes` - Compiles main classes only
-- `./gradlew processResources` - Processes the plugin.yml and other resources
+### Paper Plugin
+- `./gradlew :paper_plugin:compileKotlin` - Compiles the plugin Kotlin source
+- `./gradlew :paper_plugin:processResources` - Processes plugin.yml and resources
+
+### Webhook Server
+- `./gradlew :webhook_server:compileKotlin` - Compiles the server Kotlin source
 
 ## Project Structure
 
-The project follows standard Gradle conventions with Kotlin-specific organization:
+Multi-module Gradle project with separate Paper plugin and webhook server:
 
-- `src/main/kotlin/kr/kro/chzzk/minecraft/` - Main plugin source code
-  - `main.kt` - Primary plugin class extending JavaPlugin
-  - `chzzk/` - Chzzk platform integration components
-  - `event/` - Minecraft event handlers and listeners
-- `src/main/resources/plugin.yml` - Paper plugin configuration
-- `build.gradle.kts` - Kotlin-based Gradle build configuration
-- `settings.gradle.kts` - Gradle project settings
+```
+chzzk_minecraft/
+├── paper_plugin/                           # Minecraft Paper Plugin
+│   ├── src/main/kotlin/kr/kro/chzzk/minecraft/
+│   │   ├── Main.kt                         # Primary plugin class extending JavaPlugin
+│   │   ├── api/ChzzkAuthApiClient.kt       # Chzzk API integration
+│   │   ├── command/                        # Plugin commands
+│   │   ├── database/                       # Database layer
+│   │   ├── event/ & listener/              # Minecraft event handlers
+│   │   └── util/                           # Utility classes
+│   ├── src/main/resources/plugin.yml       # Paper plugin configuration
+│   └── build.gradle.kts                    # Plugin build configuration
+├── webhook_server/                         # Webhook Server (empty structure)
+├── settings.gradle.kts                     # Root project settings
+└── gradlew*                                # Gradle wrapper
+```
 
 ## Plugin Architecture
 

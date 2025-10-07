@@ -1,0 +1,23 @@
+# 치지직 마인크래프트 연동 플러그인 설정 파일
+
+# 웹훅 서버 설정
+webhook:
+  enabled: true          # 웹훅 서버 사용 여부
+  port: 8080            # 웹훅 서버 포트
+  host: "0.0.0.0"       # 바인딩 주소 (모든 인터페이스)
+
+# 데이터베이스 설정
+database:
+  path: "plugins/ChzzkMinecraft/data.db"  # SQLite 데이터베이스 경로
+
+# 치지직 API 설정
+chzzk:
+  api_url: "https://api.chzzk.naver.com"
+  timeout: 10000        # API 요청 타임아웃 (ms)
+
+# 메시지 설정
+messages:
+  prefix: "§6[치지직] §f"
+  auth_success: "인증이 완료되었습니다!"
+  auth_failed: "인증에 실패했습니다."
+  webhook_received: "웹훅을 받았습니다."
