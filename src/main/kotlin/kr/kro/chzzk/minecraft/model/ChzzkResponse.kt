@@ -11,6 +11,14 @@ data class ChzzkChannelResponse(
 )
 
 /**
+ * 치지직 프로필 응답 데이터
+ */
+data class ChzzkProfileResponse(
+    val chzzkId: String,
+    val chzzkName: String
+)
+
+/**
  * 치지직 토큰 응답 데이터
  */
 data class ChzzkTokenResponse(

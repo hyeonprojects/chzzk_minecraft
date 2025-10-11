@@ -9,47 +9,35 @@ This is a Minecraft Paper plugin written in Kotlin, designed to integrate with t
 ## Build Commands
 
 ### Root Project
-- `./gradlew build` - Builds all subprojects (paper_plugin + webhook_server)
-- `./gradlew clean` - Cleans all subprojects
+- `./gradlew build` - Builds the Paper plugin
+- `./gradlew clean` - Cleans the project
+- `./gradlew jar` - Creates the plugin JAR file for deployment
+- `./gradlew test` - Runs the test suite
 
-### Paper Plugin
-- `./gradlew :paper_plugin:build` - Builds the Paper plugin
-- `./gradlew :paper_plugin:jar` - Creates the plugin JAR file for deployment
-- `./gradlew :paper_plugin:test` - Runs the plugin test suite
-
-### Webhook Server
-- `./gradlew :webhook_server:build` - Builds the webhook server
-- `./gradlew :webhook_server:run` - Runs the webhook server
-- `./gradlew :webhook_server:test` - Runs the webhook server test suite
 
 ## Development Commands
 
-### Paper Plugin
-- `./gradlew :paper_plugin:compileKotlin` - Compiles the plugin Kotlin source
-- `./gradlew :paper_plugin:processResources` - Processes plugin.yml and resources
+- `./gradlew compileKotlin` - Compiles the Kotlin source
+- `./gradlew processResources` - Processes plugin.yml and resources
 
-### Webhook Server
-- `./gradlew :webhook_server:compileKotlin` - Compiles the server Kotlin source
 
 ## Project Structure
 
-Multi-module Gradle project with separate Paper plugin and webhook server:
+Single-module Gradle project with Paper plugin:
 
 ```
 chzzk_minecraft/
-├── paper_plugin/                           # Minecraft Paper Plugin
-│   ├── src/main/kotlin/kr/kro/chzzk/minecraft/
-│   │   ├── Main.kt                         # Primary plugin class extending JavaPlugin
-│   │   ├── api/ChzzkAuthApiClient.kt       # Chzzk API integration
-│   │   ├── command/                        # Plugin commands
-│   │   ├── database/                       # Database layer
-│   │   ├── event/ & listener/              # Minecraft event handlers
-│   │   └── util/                           # Utility classes
-│   ├── src/main/resources/plugin.yml       # Paper plugin configuration
-│   └── build.gradle.kts                    # Plugin build configuration
-├── webhook_server/                         # Webhook Server (empty structure)
-├── settings.gradle.kts                     # Root project settings
-└── gradlew*                                # Gradle wrapper
+├── src/main/kotlin/kr/kro/chzzk/minecraft/
+│   ├── Main.kt                         # Primary plugin class extending JavaPlugin
+│   ├── api/ChzzkAuthApiClient.kt       # Chzzk API integration
+│   ├── command/                        # Plugin commands
+│   ├── database/                       # Database layer
+│   ├── event/ & listener/              # Minecraft event handlers
+│   └── util/                           # Utility classes
+├── src/main/resources/plugin.yml       # Paper plugin configuration
+├── build.gradle.kts                    # Project build configuration
+├── settings.gradle.kts                 # Root project settings
+└── gradlew*                            # Gradle wrapper
 ```
 
 ## Plugin Architecture

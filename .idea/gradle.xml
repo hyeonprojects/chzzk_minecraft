@@ -9,8 +9,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/paper_plugin" />
-            <option value="$PROJECT_DIR$/webhook_server" />
           </set>
         </option>
       </GradleProjectSettings>

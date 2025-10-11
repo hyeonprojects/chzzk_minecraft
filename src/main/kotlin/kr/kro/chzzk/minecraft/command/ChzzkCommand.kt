@@ -66,40 +66,40 @@ class ChzzkCommand(
         
         val authCode = args[1]
         
-        // 기존 연결 확인
-        userRepository.findByMinecraftUuid(player.uniqueId)?.let {
-            player.sendMessage("§c이미 연결된 계정입니다.")
-            return false
-        }
+        // 기존 연결 확인 (임시 주석 처리)
+        // userRepository.findByMinecraftUuid(player.uniqueId)?.let {
+        //     player.sendMessage("§c이미 연결된 계정입니다.")
+        //     return false
+        // }
         
-        // 치지직 API 호출
-        val chzzkProfile = chzzkApiClient.getProfileByAuthCode(authCode)
-        if (chzzkProfile == null) {
-            player.sendMessage("§c유효하지 않은 인증 코드입니다.")
-            return false
-        }
+        // 치지직 API 호출 (임시 주석 처리)
+        // val chzzkProfile = chzzkApiClient.getProfileByAuthCode(authCode)
+        // if (chzzkProfile == null) {
+        //     player.sendMessage("§c유효하지 않은 인증 코드입니다.")
+        //     return false
+        // }
         
-        // 중복 연결 확인
-        userRepository.findByChzzkId(chzzkProfile.chzzkId)?.let {
-            player.sendMessage("§c이미 다른 마인크래프트 계정과 연결된 치지직 계정입니다.")
-            return false
-        }
+        // 중복 연결 확인 (임시 주석 처리)
+        // userRepository.findByChzzkId(chzzkProfile.chzzkId)?.let {
+        //     player.sendMessage("§c이미 다른 마인크래프트 계정과 연결된 치지직 계정입니다.")
+        //     return false
+        // }
         
-        // 사용자 저장
-        val user = User(
-            id = 0,
-            minecraftUuid = player.uniqueId,
-            minecraftName = player.name,
-            chzzkId = chzzkProfile.chzzkId,
-            chzzkName = chzzkProfile.chzzkName,
-            chzzkDevCode = authCode,
-            createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis()
-        )
+        // 사용자 저장 (임시 주석 처리)
+        // val user = User(
+        //     id = 0,
+        //     minecraftUuid = player.uniqueId,
+        //     minecraftName = player.name,
+        //     chzzkId = chzzkProfile.chzzkId,
+        //     chzzkName = chzzkProfile.chzzkName,
+        //     chzzkDevCode = authCode,
+        //     createdAt = System.currentTimeMillis(),
+        //     updatedAt = System.currentTimeMillis()
+        // )
         
-        userRepository.save(user)
-        player.sendMessage("§a치지직 계정이 성공적으로 연결되었습니다!")
-        player.sendMessage("§7연결된 계정: §e${chzzkProfile.chzzkName}")
+        // userRepository.save(user)
+        player.sendMessage("§a치지직 계정 연결 기능은 현재 개발 중입니다.")
+        // player.sendMessage("§7연결된 계정: §e${chzzkProfile.chzzkName}")
         
         return true
     }
