@@ -26,56 +26,6 @@ class ChzzkApiClient {
 
 
     /**
-     * 치지직 토큰 발급 요청
-     * @param requestParams 요청 파라미터
-     * @return 인증 코드 응답 또는 null
-     * 필요한 토큰이 발급됨
-     */
-    suspend fun getChzzkAuthCode(requestParams: ChzzkAuthCodeRequestDto): ChzzkAuthCodeResponseDto? {
-        if (requestParams.clientId.isBlank() ||
-            requestParams.redirectUri.isBlank() ||
-            requestParams.state.isBlank()
-        ) {
-            throw IllegalArgumentException("필수 파라미터가 누락되었습니다.")
-        }
-
-        return withContext(Dispatchers.IO) {
-            try {
-                // Query Params 설정
-                val url = buildString {
-                    append("${baseUrl}/account-interlock?")
-                    append("clientId=${requestParams.clientId}")
-                    append("&redirectUri=${requestParams.redirectUri}")
-                    append("&state=${requestParams.state}")
-                }
-
-                val request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .timeout(Duration.ofSeconds(30))
-                    .GET()
-                    .build()
-
-                val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
-
-                // 상태 코드가 200인 경우에만 처리
-                if (response.statusCode() == 200) {
-                    val responseBody = Json.decodeFromString<ChzzkAuthCodeResponseDto>(response.body())
-                    responseBody
-                } else {
-                    println("토큰 발급 요청 실패: ${response.statusCode()}")
-                    null
-                }
-            } catch (e: IOException) {
-                println("토큰 발급 요청 중 네트워크 오류: ${e.message}")
-                null
-            } catch (e: Exception) {
-                println("토큰 발급 요청 중 오류: ${e.message}")
-                null
-            }
-        }
-    }
-
-    /**
      * 치지직 Access Token 발급 요청
      * @param requestBody 요청 본문 데이터
      * @return 토큰 응답 또는 null

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>치지직 인증 코드 요청</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-hint {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .response-section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .response-section.show {
+            display: block;
+        }
+
+        .response-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .response-item {
+            margin-bottom: 12px;
+        }
+
+        .response-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .response-value {
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        .warning strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="authFormContainer">
+    <h1>🎮 치지직 인증 코드 요청</h1>
+    <p class="subtitle">Access Token 발급을 위한 인증 코드를 요청합니다</p>
+
+    <form id="authForm">
+        <div class="form-group">
+            <label for="clientId">
+                Client ID <span class="required">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="clientId"
+                    name="clientId"
+                    placeholder="fefb6bbb-00c2-497c-afc2-XXXXXXXXXXXX"
+                    required
+            >
+            <div class="input-hint">애플리케이션 등록 시 발급받은 Client ID를 입력하세요</div>
+        </div>
+
+        <div class="form-group">
+            <label for="redirectUri">
+                Redirect URI <span class="required">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="redirectUri"
+                    name="redirectUri"
+                    placeholder="http://localhost:8080/api/path"
+                    value="http://localhost:8080/api/callback"
+                    required
+            >
+            <div class="input-hint">애플리케이션 등록 시 입력한 로그인 리디렉션 URL과 일치해야 합니다</div>
+        </div>
+
+        <div class="form-group">
+            <label for="state">
+                State <span class="required">*</span>
+            </label>
+            <input
+                    type="text"
+                    id="state"
+                    name="state"
+                    placeholder="zxclDasdfA25"
+                    required
+            >
+            <div class="input-hint">CSRF 공격 방지를 위한 임의의 문자열 (자동 생성됨)</div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn-secondary" onclick="generateState()">State 생성</button>
+            <button type="submit" class="btn-primary">인증 요청</button>
+        </div>
+    </form>
+
+    <div class="warning">
+        <strong>⚠️ 주의사항</strong>
+        Redirect URI는 애플리케이션 등록 시 입력한 로그인 리디렉션 URL과 정확히 일치해야 합니다.
+    </div>
+</div>
+
+<!-- 인증 응답 페이지 -->
+<div class="container" id="responseContainer" style="display: none;">
+    <h1>✅ 인증 성공!</h1>
+    <p class="subtitle">치지직 인증 코드가 정상적으로 발급되었습니다</p>
+
+    <div class="response-section show">
+        <div class="response-title">📋 인증 응답 정보</div>
+
+        <div class="response-item">
+            <span class="response-label">Authorization Code</span>
+            <div class="response-value" id="authCode">-</div>
+        </div>
+
+        <div class="response-item">
+            <span class="response-label">State</span>
+            <div class="response-value" id="responseState">-</div>
+        </div>
+
+        <div class="response-item">
+            <span class="response-label">State 검증</span>
+            <div class="response-value" id="stateValidation">-</div>
+        </div>
+
+        <div class="response-item">
+            <span class="response-label">수신 시각</span>
+            <div class="response-value" id="timestamp">-</div>
+        </div>
+
+        <div class="response-item">
+            <span class="response-label">Response Object (JSON)</span>
+            <div class="response-value" id="responseJson" style="white-space: pre-wrap;">-</div>
+        </div>
+    </div>
+
+    <div class="warning" style="background: #d4edda; border-left-color: #28a745; color: #155724;">
+        <strong>✓ 다음 단계</strong>
+        이제 이 Authorization Code를 사용하여 Access Token을 발급받을 수 있습니다.
+    </div>
+
+    <div class="button-group">
+        <button type="button" class="btn-secondary" onclick="copyToClipboard()">📋 코드 복사</button>
+        <button type="button" class="btn-primary" onclick="resetPage()">🔄 새로 요청</button>
+    </div>
+</div>
+
+<script>
+    // State 자동 생성 함수 (8자리)
+    function generateState() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let state = '';
+        for (let i = 0; i < 8; i++) {
+            state += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        document.getElementById('state').value = state;
+    }
+
+    // 페이지 로드 시 State 자동 생성
+    window.addEventListener('DOMContentLoaded', () => {
+        // URL에서 code와 state 파라미터 확인 (리디렉션 후)
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+
+        if (code && state) {
+            // 응답 페이지 표시
+            showResponsePage(code, state);
+        } else {
+            // 인증 요청 페이지 표시
+            generateState();
+        }
+    });
+
+    // 응답 페이지 표시 함수
+    function showResponsePage(code, state) {
+        // 저장된 state와 비교 검증
+        const savedState = localStorage.getItem('chzzk_oauth_state');
+        const stateValid = savedState === state;
+
+        // 현재 시각
+        const now = new Date();
+        const timestamp = now.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+
+        // 응답 데이터 객체 생성
+        const responseData = {
+            code: code,
+            state: state,
+            stateValid: stateValid,
+            savedState: savedState,
+            timestamp: timestamp
+        };
+
+        // 콘솔에 출력
+        console.log('=== 치지직 인증 응답 ===');
+        console.log('받은 Code:', code);
+        console.log('받은 State:', state);
+        console.log('저장된 State:', savedState);
+        console.log('State 일치 여부:', stateValid);
+        console.log('Timestamp:', timestamp);
+        console.log('Response Object:', responseData);
+
+        // State 검증 실패 경고
+        if (!stateValid) {
+            console.warn('⚠️ State 값이 일치하지 않습니다! CSRF 공격 가능성이 있습니다.');
+            console.warn('요청 시 State:', savedState);
+            console.warn('응답 받은 State:', state);
+        }
+
+        // 폼 숨기고 응답 페이지 표시
+        document.getElementById('authFormContainer').style.display = 'none';
+        document.getElementById('responseContainer').style.display = 'block';
+
+        // 화면에 데이터 표시
+        document.getElementById('authCode').textContent = code;
+        document.getElementById('responseState').textContent = state + (savedState ? ` (요청: ${savedState})` : '');
+        document.getElementById('stateValidation').textContent = stateValid ? '✓ 검증 성공 (State 일치)' : '✗ 검증 실패 (State 불일치)';
+        document.getElementById('stateValidation').style.color = stateValid ? '#28a745' : '#dc3545';
+        document.getElementById('stateValidation').style.fontWeight = stateValid ? 'normal' : 'bold';
+        document.getElementById('timestamp').textContent = timestamp;
+
+        // Response Object를 JSON으로 표시
+        document.getElementById('responseJson').textContent = JSON.stringify(responseData, null, 2);
+
+        // 세션 스토리지에 저장 (필요시 다른 페이지에서 사용)
+        sessionStorage.setItem('chzzk_auth_code', code);
+        sessionStorage.setItem('chzzk_auth_state', state);
+        sessionStorage.setItem('chzzk_state_valid', stateValid);
+
+        // localStorage 정리
+        localStorage.removeItem('chzzk_oauth_state');
+    }
+
+    // 클립보드에 코드 복사
+    function copyToClipboard() {
+        const code = document.getElementById('authCode').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('✅ Authorization Code가 클립보드에 복사되었습니다!');
+        }).catch(() => {
+            // 폴백: 텍스트 영역 사용
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('✅ Authorization Code가 클립보드에 복사되었습니다!');
+        });
+    }
+
+    // 페이지 초기화
+    function resetPage() {
+        // URL 파라미터 제거하고 페이지 새로고침
+        window.location.href = window.location.pathname;
+    }
+
+    // 폼 제출 처리
+    document.getElementById('authForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const clientId = document.getElementById('clientId').value.trim();
+        const redirectUri = document.getElementById('redirectUri').value.trim();
+        const state = document.getElementById('state').value.trim();
+
+        if (!clientId || !redirectUri || !state) {
+            alert('모든 필수 항목을 입력해주세요.');
+            return;
+        }
+
+        // 치지직 인증 URL 생성
+        const authUrl = new URL('https://chzzk.naver.com/account-interlock');
+        authUrl.searchParams.append('clientId', clientId);
+        authUrl.searchParams.append('redirectUri', redirectUri);
+        authUrl.searchParams.append('state', state);
+
+        // State 값을 로컬 스토리지에 저장 (검증용)
+        localStorage.setItem('chzzk_oauth_state', state);
+
+        // 치지직 인증 페이지로 리디렉션
+        window.location.href = authUrl.toString();
+    });
+</script>
+</body>
+</html>
