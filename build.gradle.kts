@@ -27,6 +27,11 @@ dependencies {
     // 코루틴만 유지 (비동기 처리용)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
+    // Socket.IO JVM 클라이언트 라이브러리
+    implementation("io.socket:socket.io-client:2.1.1") {
+        exclude(group = "org.json", module = "json")
+    }
+
     // Paper API
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     testImplementation(kotlin("test"))
