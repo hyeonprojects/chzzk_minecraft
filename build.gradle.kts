@@ -1,6 +1,13 @@
 plugins {
     kotlin("jvm") version "2.2.20"
     kotlin("plugin.serialization") version "2.2.20"
+
+    // Spring Boot 플러그인 버전 관리 (적용 X)
+    id("org.springframework.boot") version "4.0.0" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+
+    // Shadow 플러그인 (PaperMC 플러그인 빌드용)
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
 }
 
 group = "kr.kro.chzzk.minecraft"
@@ -16,25 +23,17 @@ repositories {
 
 dependencies {
     // Exposed ORM 및 SQLite 드라이버
-    implementation("org.jetbrains.exposed:exposed-core:0.44.0")
-    implementation("org.jetbrains.exposed:exposed-dao:0.44.0")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.44.0")
-    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+    implementation("org.jetbrains.exposed:exposed-core:1.0.0-rc-3")
+    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0-rc-3")
+    implementation("org.jetbrains.exposed:exposed-dao:1.0.0-rc-3")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.50.1") // 날짜/시간 처리
+
+    // MySQL
+    implementation("com.zaxxer:HikariCP:5.1.0")
+    implementation("mysql:mysql-connector-java:8.0.33")
 
     // Kotlin Serialization (JSON)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-
-    // 코루틴만 유지 (비동기 처리용)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-
-    // Socket.IO JVM 클라이언트 라이브러리
-    implementation("io.socket:socket.io-client:2.1.1") {
-        exclude(group = "org.json", module = "json")
-    }
-
-    // Paper API
-    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
-    testImplementation(kotlin("test"))
 }
 
 tasks.processResources {

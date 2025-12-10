@@ -23,7 +23,8 @@ class Main : JavaPlugin() {
     private lateinit var messageUtil: MessageUtil
     private lateinit var configUtil: ConfigUtil
     private lateinit var webhookServer: WebhookServer
-    
+
+    // 실행되면
     override fun onEnable() {
         try {
             // 유틸리티 초기화
