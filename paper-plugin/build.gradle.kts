@@ -1,7 +1,12 @@
 plugins {
     kotlin("jvm") version "2.2.20"
     kotlin("plugin.serialization") version "2.2.20"
-    id("com.github.johnrengelman.shadow")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+}
+
+repositories {
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
 }
 
 dependencies {
