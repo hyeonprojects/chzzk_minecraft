@@ -16,16 +16,6 @@ dependencies {
     // Kotlin Standard Library
     implementation(kotlin("stdlib"))
 
-    // Exposed ORM 및 SQLite 드라이버
-    implementation("org.jetbrains.exposed:exposed-core:1.0.0-rc-3")
-    implementation("org.jetbrains.exposed:exposed-jdbc:1.0.0-rc-3")
-    implementation("org.jetbrains.exposed:exposed-dao:1.0.0-rc-3")
-    implementation("org.jetbrains.exposed:exposed-java-time:0.50.1") // 날짜/시간 처리
-
-    // MySQL + HikariCP
-    implementation("com.zaxxer:HikariCP:5.1.0")
-    implementation("mysql:mysql-connector-java:8.0.33")
-
     // Kotlin Serialization (JSON)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
@@ -42,7 +32,6 @@ tasks {
 
     shadowJar {
         relocate("kotlin", "kr.kro.chzzk.minecraft.libs.kotlin")
-        relocate("org.jetbrains.exposed", "kr.kro.chzzk.minecraft.libs.exposed")
 
         archiveFileName.set("paper-plugin-${project.version}.jar")
     }
