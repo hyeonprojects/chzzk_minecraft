@@ -18,14 +18,21 @@ data class TokenEntity(
     @Column(name = "nickname", nullable = false)
     val nickName: String,
 
-    @Column(name)
+    @Column(name = "client_id", nullable = false)
+    val clientId: String,
 
     @Column(name = "access_token", nullable = false, length = 500)
     val accessToken: String,
-    val refreshToken: String,
-    val createdAt: Long,
-    val expiredAt: Long,
-    val revokedAt: Long? = null,
-) {
 
-}
+    @Column(name = "refresh_token", nullable = false, length = 500)
+    val refreshToken: String,
+
+    @Column(name = "created_at", nullable = false)
+    val createdAt: Long,
+
+    @Column(name = "expired_at", nullable = false)
+    val expiredAt: Long,
+
+    @Column(name = "revoked_at")
+    val revokedAt: Long? = null,
+)

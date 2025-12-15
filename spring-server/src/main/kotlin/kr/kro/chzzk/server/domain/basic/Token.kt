@@ -31,10 +31,6 @@ data class Token(
     }
 
     /**
-     * clientId 와 nickName 반영
-     */
-
-    /**
      * 토큰 데이터 변경
      */
     fun rotateTokens(newAccessToken: String, newRefreshToken: String, newExpiredAt: Instant): Token {

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>치지직 인증 코드 요청</title>
+    <title>Chzzk Minecraft 소셜 로그인 연결</title>
     <style>
         * {
             margin: 0;
@@ -13,67 +13,72 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(160deg, #eef2f7 0%, #dbe9ff 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #1f2937;
         }
 
         .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 600px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(15, 23, 42, 0.15);
+            padding: 48px;
+            max-width: 640px;
             width: 100%;
+            backdrop-filter: blur(6px);
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
+            color: #111827;
+            margin-bottom: 12px;
+            font-size: 30px;
         }
 
         .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
+            color: #4b5563;
+            margin-bottom: 32px;
+            font-size: 15px;
         }
 
         label {
-            display: block;
-            color: #333;
+            color: #374151;
             font-weight: 600;
             margin-bottom: 8px;
             font-size: 14px;
         }
 
         .required {
-            color: #e74c3c;
+            color: #dc2626;
+        }
+
+        .form-group {
+            display: none;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 10px;
             font-size: 14px;
-            transition: border-color 0.3s;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            background: #f9fafb;
+            color: #111827;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .input-hint {
-            color: #999;
+            color: #6b7280;
             font-size: 12px;
             margin-top: 5px;
         }
@@ -84,43 +89,51 @@
             margin-top: 30px;
         }
 
+        .button-group.single {
+            justify-content: center;
+        }
+
         button {
             flex: 1;
             padding: 14px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+            letter-spacing: 0.02em;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: #ffffff;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 16px 30px rgba(37, 99, 235, 0.45);
         }
 
         .btn-secondary {
-            background: #f5f5f5;
-            color: #333;
+            background: #e5e7eb;
+            color: #1f2937;
+            border: 1px solid #cbd5f5;
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: #dce3f5;
         }
 
         .response-section {
             display: none;
             margin-top: 30px;
             padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #3b82f6;
         }
 
         .response-section.show {
@@ -129,7 +142,7 @@
 
         .response-title {
             font-weight: 600;
-            color: #333;
+            color: #111827;
             margin-bottom: 15px;
             font-size: 16px;
         }
@@ -140,35 +153,40 @@
 
         .response-label {
             font-weight: 600;
-            color: #666;
+            color: #4b5563;
             font-size: 13px;
             display: block;
             margin-bottom: 5px;
         }
 
         .response-value {
-            background: white;
+            background: #ffffff;
+            color: #1f2937;
             padding: 10px;
-            border-radius: 6px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
             word-break: break-all;
             font-family: 'Courier New', monospace;
             font-size: 13px;
-            color: #333;
         }
 
         .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #856404;
+            background: #fff7e6;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-top: 28px;
         }
 
         .warning strong {
-            display: block;
-            margin-bottom: 5px;
+            color: #b45309;
+        }
+
+        .warning[style] {
+            background: #ecfdf5 !important;
+            border-left-color: #34d399 !important;
+            color: #065f46 !important;
         }
     </style>
 </head>
@@ -186,7 +204,7 @@
                     type="text"
                     id="clientId"
                     name="clientId"
-                    placeholder="fefb6bbb-00c2-497c-afc2-XXXXXXXXXXXX"
+                    placeholder="40ef567d-1d84-41b1-b191-d5e991372e1a"
                     required
             >
             <div class="input-hint">애플리케이션 등록 시 발급받은 Client ID를 입력하세요</div>
@@ -221,8 +239,7 @@
             <div class="input-hint">CSRF 공격 방지를 위한 임의의 문자열 (자동 생성됨)</div>
         </div>
 
-        <div class="button-group">
-            <button type="button" class="btn-secondary" onclick="generateState()">State 생성</button>
+        <div class="button-group single">
             <button type="submit" class="btn-primary">인증 요청</button>
         </div>
     </form>
@@ -399,9 +416,9 @@
     document.getElementById('authForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const clientId = document.getElementById('clientId').value.trim();
-        const redirectUri = document.getElementById('redirectUri').value.trim();
-        const state = document.getElementById('state').value.trim();
+        const clientId = '40ef567d-1d84-41b1-b191-d5e991372e1a'
+        const redirectUri = 'http://login.chzzk-minecraft.kro.kr'
+        const state = this.generateState();
 
         if (!clientId || !redirectUri || !state) {
             alert('모든 필수 항목을 입력해주세요.');
