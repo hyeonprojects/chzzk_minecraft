@@ -1,8 +1,10 @@
 package kr.kro.chzzk.server.presentation.controller
 
+import kr.kro.chzzk.server.presentation.dto.ChzzkAuthManagementDto
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -17,12 +19,18 @@ class ChzzkAuthController {
 
     /**
      * 치지직 소셜 로그인 리다이렉트 기능
+     * 홈페이지를 통해서 소셜 로그인을 진행하고 데이터를 전달 받는 역할을 수행함
      */
     @PostMapping(value = ["/redirect"])
-    suspend fun redirect() {
+    suspend fun redirect(
+        @RequestBody requestBody: ChzzkAuthManagementDto.RedirectRequest
+    ) {
         log.info("Auth redirect called")
     }
 
+    /**
+     * 치지직 회원가입 기능
+     */
     @PostMapping(value = ["/register"])
     suspend fun register() {
         log.info("Auth register called")

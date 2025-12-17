@@ -7,7 +7,7 @@ import java.time.Instant
  */
 data class Token(
     val id: Long,
-    val nickName: String,
+    val userId: String,
     val clientId: String,
     val accessToken: String,
     val refreshToken: String,

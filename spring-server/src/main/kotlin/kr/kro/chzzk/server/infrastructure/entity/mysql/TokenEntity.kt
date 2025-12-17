@@ -35,4 +35,6 @@ data class TokenEntity(
 
     @Column(name = "revoked_at")
     val revokedAt: Long? = null,
-)
+) {
+
+}

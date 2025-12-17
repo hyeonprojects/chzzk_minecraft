@@ -17,8 +17,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-
     // MySQL
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-security-oauth2-client")
