@@ -10,31 +10,23 @@ import org.hibernate.annotations.CreationTimestamp
 import java.time.Instant
 
 @Entity
-@Table(name = "token")
-data class TokenEntity(
+@Table(name = "user")
+data class UserEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long,
 
-    @Column(name = "client_id", nullable = false)
-    val clientId: String,
+    @Column(name = "user_id", nullable = false, unique = true, length = 100)
+    val userId: String,
 
-    @Column(name = "access_token", nullable = false, length = 500)
-    val accessToken: String,
-
-    @Column(name = "refresh_token", nullable = false, length = 500)
-    val refreshToken: String,
+    @Column(name = "nickname", nullable = false, length = 50)
+    val nickName: String,
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     val createdAt: Instant,
 
-    @Column(name = "expired_at", nullable = false)
-    val expiredAt: Instant,
-
-    @Column(name = "revoked_at")
-    val revokedAt: Instant? = null,
-) {
-
-}
+    @Column(name = "deleted_at", nullable = false)
+    val deletedAt: Instant,
+)
